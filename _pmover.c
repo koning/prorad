@@ -38,19 +38,6 @@
 
 #if PY_MAJOR_VERSION < 3
   #define IS_PY2K
-  #define PY_CHAR_TYPE char
-  #define PY_CHAR_PTR char*
-  #define PCodeObject PyCodeObject*
-  #define pstrlen strlen
-#else
-  #define PY_CHAR_TYPE wchar_t
-  #define PY_CHAR_PTR wchar_t*
-  #define PCodeObject PyObject*
-  #define pstrlen wcslen
-  #define PyNumber_Int PyNumber_Long
-  #ifndef PyString_FromStringAndSize
-    #define PyString_FromStringAndSize PyUnicode_FromStringAndSize
-  #endif
 #endif
 
 
