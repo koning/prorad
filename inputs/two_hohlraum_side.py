@@ -1,4 +1,4 @@
-from two_hohlraum import *
+from .two_hohlraum import *
 
 source_loc = [-4.4,0.0,0.125]
 prop_dir = [1.0,0.0,0.0] 

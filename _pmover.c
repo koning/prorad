@@ -36,6 +36,24 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include "pmover.h"
 
+#if PY_MAJOR_VERSION < 3
+  #define IS_PY2K
+  #define PY_CHAR_TYPE char
+  #define PY_CHAR_PTR char*
+  #define PCodeObject PyCodeObject*
+  #define pstrlen strlen
+#else
+  #define PY_CHAR_TYPE wchar_t
+  #define PY_CHAR_PTR wchar_t*
+  #define PCodeObject PyObject*
+  #define pstrlen wcslen
+  #define PyNumber_Int PyNumber_Long
+  #ifndef PyString_FromStringAndSize
+    #define PyString_FromStringAndSize PyUnicode_FromStringAndSize
+  #endif
+#endif
+
+
 static char module_docstring[] =
 	"This module provides an interface for moving protons in parallel using C.";
 
@@ -48,6 +66,7 @@ static PyMethodDef module_methods[] = {
 	{NULL, NULL, 0, NULL}
 };
 
+#ifdef IS_PY2K
 PyMODINIT_FUNC init_pmover(void) {
 	PyObject *m = Py_InitModule3("_pmover", module_methods, module_docstring);
 	if (m == NULL)
@@ -56,6 +75,30 @@ PyMODINIT_FUNC init_pmover(void) {
 	/* Load 'numpy' functionality */
 	import_array();
 }
+#else
+static struct PyModuleDef moduledef = {
+  PyModuleDef_HEAD_INIT,
+  "_pmover",                   /* m_name */
+  module_docstring,            /* m_doc */
+  -1,                          /* m_size */
+  module_methods,              /* m_methods */
+  NULL,                        /* m_reload */
+  NULL,                        /* m_traverse */
+  NULL,                        /* m_clear */
+  NULL                         /* m_free */
+};
+
+PyMODINIT_FUNC PyInit__pmover(void) {
+	PyObject *m = PyModule_Create(&moduledef);
+	if (m == NULL)
+		return m;
+	
+	/* Load 'numpy' functionality */
+	import_array();
+
+	return m;
+}
+#endif
 
 static PyObject *move_protons(PyObject *self, PyObject *args) {
 	double mass, charge, ds, dx, dy, dz, gx, gy, gz;

@@ -42,7 +42,7 @@ import scipy.linalg as linalg
 from scipy import interpolate
 import matplotlib as mpl
 import os
-if not os.environ.has_key('DISPLAY'):
+if 'DISPLAY' not in os.environ:
     mpl.use('Agg')
 import matplotlib.pyplot as plt
 import itertools
@@ -229,9 +229,9 @@ def load_grid(fformat=None,fname=None,ngridx=None,ngridy=None,ngridz=None):
         # Which grid indices to populate. Omitted indices will be left as zeros. 
         # All indices are populated unless specified otherwise in the input file.
         # Leaving out indices that the user knows will have zero fields can speed things up.
-        field_xrange_idx = range(ngridx)
-        field_yrange_idx = range(ngridy)
-        field_zrange_idx = range(ngridz)
+        field_xrange_idx = list(range(ngridx))
+        field_yrange_idx = list(range(ngridy))
+        field_zrange_idx = list(range(ngridz))
         
         try: field_xrange_idx = params.field_xrange_idx
         except AttributeError: pass
@@ -281,9 +281,9 @@ def load_grid(fformat=None,fname=None,ngridx=None,ngridy=None,ngridz=None):
 
         # Sample the data onto a uniform grid, taking the coarsest resolution (i.e. averaging out any AMR)
         uniform_data = ds.covering_grid(level=0, left_edge=ds.domain_left_edge, dims=ds.domain_dimensions)
-        magx = uniform_data[u'magx'].in_cgs().to_ndarray()
-        magy = uniform_data[u'magy'].in_cgs().to_ndarray()
-        magz = uniform_data[u'magz'].in_cgs().to_ndarray()
+        magx = uniform_data['magx'].in_cgs().to_ndarray()
+        magy = uniform_data['magy'].in_cgs().to_ndarray()
+        magz = uniform_data['magz'].in_cgs().to_ndarray()
         
         right_edge = ds.domain_right_edge.in_cgs().to_ndarray()
         left_edge = ds.domain_left_edge.in_cgs().to_ndarray()
@@ -706,8 +706,8 @@ def plot_results(grid,film_x,film_y,Ep,traces,plot_fluence=True,plot_quiver=Fals
         # x-y magnetic fields
         quiverU = grid.vals[:,:,grid.nz/3,3]
         quiverV = grid.vals[:,:,grid.nz/3,4]
-        quiverX = range(len(quiverU[:,0]))
-        quiverY = range(len(quiverU[0,:]))
+        quiverX = list(range(len(quiverU[:,0])))
+        quiverY = list(range(len(quiverU[0,:])))
         quiverX,quiverY = np.meshgrid(quiverX, quiverY, indexing='ij')
 
         if grid.cyl_coords:
@@ -771,7 +771,7 @@ def plot_results(grid,film_x,film_y,Ep,traces,plot_fluence=True,plot_quiver=Fals
                 # Plot edges of 3d box as dotted black lines
                 for s, e in itertools.combinations(np.array(list(itertools.product([params.gridcorner[0],params.gridcorner[0]+grid.lx],[params.gridcorner[1],params.gridcorner[1]+grid.ly], [params.gridcorner[2],params.gridcorner[2]+grid.lz]))), 2):
                     if np.sum(np.abs(s-e)) in (grid.lx,grid.ly,grid.lz):
-                        ax.plot3D(*zip(s, e), color='k', linestyle='--')
+                        ax.plot3D(*list(zip(s, e)), color='k', linestyle='--')
             
             if grid.cyl_coords:
                 ax.set_xlim([grid.xoffset-grid.lx,grid.xoffset+grid.lx])

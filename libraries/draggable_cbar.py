@@ -7,7 +7,7 @@
 
 import matplotlib as mpl
 import os
-if not os.environ.has_key('DISPLAY'):
+if 'DISPLAY' not in os.environ:
     mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
