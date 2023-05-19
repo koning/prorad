@@ -36,10 +36,6 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include "pmover.h"
 
-#if PY_MAJOR_VERSION < 3
-  #define IS_PY2K
-#endif
-
 
 static char module_docstring[] =
 	"This module provides an interface for moving protons in parallel using C.";
@@ -53,7 +49,7 @@ static PyMethodDef module_methods[] = {
 	{NULL, NULL, 0, NULL}
 };
 
-#ifdef IS_PY2K
+#if PY_MAJOR_VERSION < 3
 PyMODINIT_FUNC init_pmover(void) {
 	PyObject *m = Py_InitModule3("_pmover", module_methods, module_docstring);
 	if (m == NULL)

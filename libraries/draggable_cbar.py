@@ -1,8 +1,8 @@
-# This code is a derivative of the "Interactive colorbar" tutorial contained in the IVS Python Workshop 
+# This code is a derivative of the "Interactive colorbar" tutorial contained in the IVS Python Workshop
 # (available at http://www.ster.kuleuven.be/~pieterd/python/html/plotting/interactive_colorbar.html),
-# which is adapted from the Python4ESAC course written by Eli Bressert, Neil Creighton and Pieter Degroote, 
-# which is itself adapted from the Practical Python for Astronomers course written by Tom Aldcroft, Tom Robitaille, 
-# Brian Refsdal, and Gus Muench (Copyright 2011, Smithsonian Astrophysical Observatory) 
+# which is adapted from the Python4ESAC course written by Eli Bressert, Neil Creighton and Pieter Degroote,
+# which is itself adapted from the Practical Python for Astronomers course written by Tom Aldcroft, Tom Robitaille,
+# Brian Refsdal, and Gus Muench (Copyright 2011, Smithsonian Astrophysical Observatory)
 # and released under a Creative Commons Attribution 3.0 License (https://creativecommons.org/licenses/by/3.0/)
 
 import matplotlib as mpl
@@ -19,7 +19,8 @@ class DraggableColorbar(object):
         self.mappable = mappable
         self.press = None
         self.cycle = sorted([i for i in dir(plt.cm) if hasattr(getattr(plt.cm,i),'N')])
-        self.index = self.cycle.index(cbar.get_cmap().name)
+        _cbar_name = cbar.cmap.name if hasattr(cbar,"cmap") else cbar.get_cmap().name
+        self.index = self.cycle.index(_cbar_name)
 
     def connect(self):
         """connect to all the events we need"""
